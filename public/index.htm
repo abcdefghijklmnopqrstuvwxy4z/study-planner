@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Study Planner</title>
+<style>
+body{font-family:Arial;}
+.task{border:1px solid #ccc;padding:10px;margin:8px;}
+.done{text-decoration:line-through;color:green;}
+</style>
+</head>
+<body>
+
+<h2>Smart Study Planner</h2>
+
+<input id="subject" placeholder="Subject">
+<input id="chapter" placeholder="Chapter">
+<input type="datetime-local" id="time">
+<button onclick="addTask()">Add Task</button>
+
+<h3>🍅 Pomodoro Timer</h3>
+<div id="timer">25:00</div>
+<button onclick="startPomodoro()">Start Focus</button>
+<div id="breakTip"></div>
+
+<h3>📊 Study Performance Score</h3>
+<div id="score">Score: 0 / 100</div>
+
+<button onclick="syncCloud()">☁️ Cloud Sync</button>
+<button onclick="loadCloud()">⬇️ Load Cloud</button>
+<button onclick="aiReschedule()">🤖 AI Reschedule</button>
+
+<h3>Tasks</h3>
+<div id="tasks"></div>
+
+<script>
+const user = new URLSearchParams(location.search).get("user");
+let tasks=[], pomodoro=0, timer, timeLeft=1500;
+
+function addTask(){
+  tasks.push({subject:subject.value,chapter:chapter.value,time:time.value,done:false});
+  render();
+}
+
+function render(){
+  tasksDiv.innerHTML="";
+  tasks.forEach((t,i)=>{
+    tasksDiv.innerHTML+=`
+    <div class="task ${t.done?'done':''}">
+      <b>${t.subject}</b> - ${t.chapter}<br>${t.time}<br>
+      <button onclick="doneTask(${i})">Done</button>
+    </div>`;
+  });
+}
+
+function doneTask(i){
+  tasks[i].done=true;
+  calculateScore();
+  render();
+}
+
+function startPomodoro(){
+  clearInterval(timer);
+  timeLeft=1500;
+  timer=setInterval(()=>{
+    timeLeft--;
+    timerDiv.innerText=`${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,"0")}`;
+    if(timeLeft<=0){
+      clearInterval(timer);
+      pomodoro++;
+      showBreak();
+      calculateScore();
+      alert("Focus completed");
+    }
+  },1000);
+}
+
+function calculateScore(){
+  let done=tasks.filter(t=>t.done).length;
+  let score=Math.min(100,done*20+pomodoro*10);
+  scoreDiv.innerText=`Score: ${score} / 100`;
+}
+
+const breaks=["Drink water 💧","Stretch 🧘","Rest eyes 👀","Walk 🚶"];
+function showBreak(){
+  breakTip.innerText=breaks[Math.floor(Math.random()*breaks.length)];
+}
+
+function syncCloud(){
+  fetch("/sync",{method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({user,tasks})});
+}
+
+function loadCloud(){
+  fetch("/sync/"+user).then(r=>r.json()).then(d=>{tasks=d;render();});
+}
+
+function aiReschedule(){
+  fetch("/ai",{method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({tasks})})
+  .then(r=>r.json()).then(d=>{tasks=d;render();});
+}
+</script>
+
+</body>
+</html>
