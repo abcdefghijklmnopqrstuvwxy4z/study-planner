@@ -1,7 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-const PORT = 3000;
+// This tells the server: use Render's port, OR 4001 if running on my PC
+const PORT = process.env.PORT || 4001;
+
 
 let users = [];
 let cloudTasks = {};
@@ -53,6 +55,15 @@ app.post("/ai", (req, res) => {
   res.json(tasks);
 });
 
+// This tells the server: "When someone visits the root (/), send them the login page"
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/register.htm");
+});
+
+// This handles any page that doesn't exist
+app.use((req, res) => {
+  res.status(404).send("<h1>404 - Page Not Found</h1><p>The page you are looking for does not exist.</p>");
+});
 app.listen(PORT, () =>
   console.log(`Server running at http://localhost:${PORT}`)
 );
