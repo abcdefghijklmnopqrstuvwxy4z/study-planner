@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
-// This tells the server: use Render's port, OR 4001 if running on my laptop
+// This tells the server: use Render's port, OR 4001 if running on my pc
 const PORT = process.env.PORT || 4001;
 
 
