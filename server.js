@@ -19,7 +19,7 @@ app.post("/register", (req, res) => {
     return res.send("User already exists");
   }
   users.push({ username, password });
-  res.redirect("/index.htm");
+  res.redirect("/login.htm");
 });
 
 // LOGIN
