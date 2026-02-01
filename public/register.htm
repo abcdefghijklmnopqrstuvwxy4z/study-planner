@@ -1,127 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register & Login</title>
-    <!-- Tailwind CSS for styling without local CSS files -->
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<html>
+<body>
+<h2>Register</h2>
 
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 id="formTitle" class="text-2xl font-bold mb-6 text-gray-800 text-center">Register</h2>
-        
-        <form id="authForm" class="space-y-4">
-            <!-- Username: Only shown during registration -->
-            <div id="usernameWrapper">
-                <input type="text" name="username" placeholder="Username" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" required>
-            </div>
-            
-            <input type="email" name="email" placeholder="Email" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" required>
-            
-            <input type="password" name="password" placeholder="Password" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" required>
-            
-            <button id="submitBtn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">
-                Register
-            </button>
-        </form>
+<form onsubmit="redirectToLogin(event)">
+  <input type="text" name="username" placeholder="Username" required><br><br>
+  <input type="password" name="password" placeholder="Password" required><br><br>
+  <button type="submit">Register</button>
+</form>
 
-        <div id="statusMessage" class="mt-4 text-center hidden p-2 rounded text-sm"></div>
+<script>
+function redirectToLogin(event) {
+  event.preventDefault();   // stop default form submission
+  alert("Registration successful!");
+  window.location.href = "login.html"; // redirect to login page
+}
+</script>
 
-        <div class="mt-6 text-center text-gray-600">
-            <span id="toggleText">Already have an account?</span>
-            <button id="toggleBtn" class="text-blue-600 font-semibold hover:underline ml-1">Login</button>
-        </div>
-    </div>
-
-    <script type="module">
-        // Firebase modules loaded from CDN (No local installation needed)
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // --- PASTE YOUR FIREBASE CONFIG HERE ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyDTYPYkZqtT1i6FHLlMkwBy7rN4OPO0WzQ",
-            authDomain: "study-planner-ab5q.firebaseapp.com",
-            projectId: "study-planner-ab5q",
-            storageBucket: "study-planner-ab5q.firebasestorage.app",
-            messagingSenderId: "56785621459",
-            appId: "1:56785621459:web:bb3882555fd96f94631f26",
-            measurementId: "G-8FS3H5BKS5"
-        };
-
-        // Initialize
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let isLoginMode = false;
-        const authForm = document.getElementById('authForm');
-        const usernameWrapper = document.getElementById('usernameWrapper');
-        const formTitle = document.getElementById('formTitle');
-        const submitBtn = document.getElementById('submitBtn');
-        const toggleBtn = document.getElementById('toggleBtn');
-        const toggleText = document.getElementById('toggleText');
-        const statusMessage = document.getElementById('statusMessage');
-
-        // Toggle UI logic
-        toggleBtn.addEventListener('click', () => {
-            isLoginMode = !isLoginMode;
-            statusMessage.classList.add('hidden');
-            
-            if (isLoginMode) {
-                formTitle.innerText = "Login";
-                submitBtn.innerText = "Login";
-                toggleText.innerText = "Don't have an account?";
-                toggleBtn.innerText = "Register";
-                usernameWrapper.classList.add('hidden');
-                usernameWrapper.querySelector('input').removeAttribute('required');
-            } else {
-                formTitle.innerText = "Register";
-                submitBtn.innerText = "Register";
-                toggleText.innerText = "Already have an account?";
-                toggleBtn.innerText = "Login";
-                usernameWrapper.classList.remove('hidden');
-                usernameWrapper.querySelector('input').setAttribute('required', '');
-            }
-        });
-
-        // Form Submission logic
-        authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = authForm.email.value;
-            const password = authForm.password.value;
-            const username = authForm.username ? authForm.username.value : '';
-
-            statusMessage.className = "mt-4 text-center p-2 rounded text-sm bg-gray-200";
-            statusMessage.innerText = "Processing...";
-            statusMessage.classList.remove('hidden');
-
-            try {
-                if (isLoginMode) {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    statusMessage.className = "mt-4 text-center p-2 rounded text-sm bg-green-100 text-green-700";
-                    statusMessage.innerText = "Login successful!";
-                } else {
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    
-                    // Save user to Firestore
-                    await setDoc(doc(db, "users", user.uid), {
-                        username: username,
-                        email: email
-                    });
-                    
-                    statusMessage.className = "mt-4 text-center p-2 rounded text-sm bg-green-100 text-green-700";
-                    statusMessage.innerText = "Registration successful!";
-                }
-            } catch (error) {
-                statusMessage.className = "mt-4 text-center p-2 rounded text-sm bg-red-100 text-red-700";
-                statusMessage.innerText = error.message;
-            }
-        });
-    </script>
 </body>
 </html>
