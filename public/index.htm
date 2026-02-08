@@ -35,6 +35,8 @@ body{font-family:Arial;}
 <script>
 const user = new URLSearchParams(location.search).get("user");
 let tasks=[], pomodoro=0, timer, timeLeft=1500;
+const tasksDiv = document.getElementById('tasks');
+const timerDiv = document.getElementById('timer');
 
 function addTask(){
   tasks.push({subject:subject.value,chapter:chapter.value,time:time.value,done:false});
