@@ -27,7 +27,7 @@ app.post("/login", (req, res) => {
   const { username, password } = req.body;
   const valid = users.find(u => u.username === username && u.password === password);
   if (!valid) return res.send("Invalid Login");
-  res.redirect("/index.htm?user=" + username);
+  res.redirect("/planner.htm?user=" + username);
 });
 
 // CLOUD SYNC
