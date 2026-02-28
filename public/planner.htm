@@ -3,12 +3,33 @@
 <head>
 <title>Smart Study Planner</title>
 <link rel="stylesheet" href="css/planner.css">
+
 <style>
-body{font-family:Arial;}
-.task{border:1px solid #ccc;padding:10px;margin:8px;}
-.done{text-decoration:line-through;color:green;}
+body{
+  font-family: Arial;
+  margin: 20px;
+}
+
+.task{
+  border:1px solid #ccc;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+}
+
+.done{
+  text-decoration: line-through;
+  color: green;
+}
+
+button{
+  padding:6px 10px;
+  margin-top:5px;
+  cursor:pointer;
+}
 </style>
 </head>
+
 <body>
 
 <h2>Smart Study Planner</h2>
@@ -26,82 +47,117 @@ body{font-family:Arial;}
 <h3>📊 Study Performance Score</h3>
 <div id="score">Score: 0 / 100</div>
 
-<button onclick="syncCloud()">☁️ Cloud Sync</button>
-<button onclick="loadCloud()">⬇️ Load Cloud</button>
-<button onclick="aiReschedule()">🤖 AI Reschedule</button>
-
 <h3>Tasks</h3>
 <div id="tasks"></div>
 
 <script>
-const user = new URLSearchParams(location.search).get("user");
-let tasks=[], pomodoro=0, timer, timeLeft=1500;
+
+let tasks = [];
+let pomodoro = 0;
+let timer;
+let timeLeft = 1500;
+
+// DOM Elements
 const tasksDiv = document.getElementById('tasks');
 const timerDiv = document.getElementById('timer');
+const scoreDiv = document.getElementById('score');
+const breakTip = document.getElementById('breakTip');
 
+const subject = document.getElementById('subject');
+const chapter = document.getElementById('chapter');
+const time = document.getElementById('time');
+
+
+// Add Task
 function addTask(){
-  tasks.push({subject:subject.value,chapter:chapter.value,time:time.value,done:false});
+
+  if(!subject.value || !chapter.value){
+    alert("Please enter Subject and Chapter");
+    return;
+  }
+
+  tasks.push({
+    subject: subject.value,
+    chapter: chapter.value,
+    time: time.value,
+    done: false
+  });
+
+  subject.value="";
+  chapter.value="";
+  time.value="";
+
   render();
 }
 
+
+// Render Tasks
 function render(){
   tasksDiv.innerHTML="";
+
   tasks.forEach((t,i)=>{
-    tasksDiv.innerHTML+=`
-    <div class="task ${t.done?'done':''}">
-      <b>${t.subject}</b> - ${t.chapter}<br>${t.time}<br>
-      <button onclick="doneTask(${i})">Done</button>
-    </div>`;
+    tasksDiv.innerHTML += `
+      <div class="task ${t.done?'done':''}">
+        <b>${t.subject}</b> - ${t.chapter}<br>
+        ${t.time}<br>
+        <button onclick="doneTask(${i})">Done</button>
+      </div>
+    `;
   });
 }
 
+
+// Mark Done
 function doneTask(i){
-  tasks[i].done=true;
+  tasks[i].done = true;
   calculateScore();
   render();
 }
 
+
+// Pomodoro Timer
 function startPomodoro(){
+
   clearInterval(timer);
-  timeLeft=1500;
-  timer=setInterval(()=>{
+  timeLeft = 1500;
+
+  timer = setInterval(()=>{
     timeLeft--;
-    timerDiv.innerText=`${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,"0")}`;
-    if(timeLeft<=0){
+
+    let minutes = Math.floor(timeLeft/60);
+    let seconds = timeLeft%60;
+
+    timerDiv.innerText =
+      minutes + ":" + seconds.toString().padStart(2,"0");
+
+    if(timeLeft <= 0){
       clearInterval(timer);
       pomodoro++;
       showBreak();
       calculateScore();
-      alert("Focus completed");
+      alert("Focus Completed!");
     }
+
   },1000);
 }
 
+
+// Score Calculation
 function calculateScore(){
-  let done=tasks.filter(t=>t.done).length;
-  let score=Math.min(100,done*20+pomodoro*10);
-  scoreDiv.innerText=`Score: ${score} / 100`;
+  let done = tasks.filter(t=>t.done).length;
+  let score = Math.min(100, done*20 + pomodoro*10);
+  scoreDiv.innerText = "Score: " + score + " / 100";
 }
 
-const breaks=["Drink water 💧","Stretch 🧘","Rest eyes 👀","Walk 🚶"];
+
+// Break Tips
+const breaks = ["Drink Water 💧","Stretch 🧘","Rest Eyes 👀","Walk 🚶"];
+
 function showBreak(){
-  breakTip.innerText=breaks[Math.floor(Math.random()*breaks.length)];
+  breakTip.innerText =
+    breaks[Math.floor(Math.random()*breaks.length)];
 }
 
-function syncCloud(){
-  fetch("/sync",{method:"POST",headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({user,tasks})});
-}
-
-function loadCloud(){
-  fetch("/sync/"+user).then(r=>r.json()).then(d=>{tasks=d;render();});
-}
-
-function aiReschedule(){
-  fetch("/ai",{method:"POST",headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({tasks})})
-  .then(r=>r.json()).then(d=>{tasks=d;render();});
-}
 </script>
 
 </body>
