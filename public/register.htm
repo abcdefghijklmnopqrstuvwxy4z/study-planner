@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <tittle>SMART STUDY PLANNER</tittle>
-    <link rel="stylesheet" href="css/register.css">
+<head>
+<title>Smart Study Planner</title>
+<link rel="stylesheet" href="css/register.css">
 </head>
+
 <body>
+
+<div class="register-box">
 
 <h2>Register</h2>
 
 <form method="POST" action="/register">
-  <label> Username</label>
-  <input name="username" placeholder="Username" required ><br><br>
-  <label>Password</label>
-  <input type="password" name="password" placeholder="Password" required><br><br>
-  <button type="submit">Register</button>
+
+<label>Username</label>
+<input type="text" name="username" required>
+
+<label>Password</label>
+<input type="password" name="password" required>
+
+<button type="submit">Register</button>
+
 </form>
 
-<br>
+<p>Did you already have an account?
+<a href="login.html">Go to Login Page</a>
+</p>
 
-<!-- Toggle Button -->
-<button onclick="goLogin()">did you already have an account? Go to Login Page</button>
-
-<script>
-function goLogin() {
-  window.location.href = "login.htm";
-}
-</script>
+</div>
 
 </body>
 </html>
