@@ -1,32 +1,52 @@
-/* Animated Background */
-body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1c1c3c);
-    background-size: 400% 400%;
-    animation: gradientBG 10s ease infinite;
+body{
+font-family: Arial;
+background: linear-gradient(to right,#43cea2,#185a9d);
+height:100vh;
+margin:0;
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
-/* Background Animation */
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+.register-box{
+background: rgba(255,255,255,0.8);
+padding:30px;
+border-radius:10px;
+width:300px;
+box-shadow:0 5px 15px rgba(0,0,0,0.3);
+text-align:center;
 }
 
-/* Glass Effect Form */
-form {
-    backdrop-filter: blur(15px);
-    background: rgba(255, 255, 255, 0.1);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    text-align: center;
-    width: 320px;
-    animation: floatCard 4s ease-in-out infinite;
+label{
+display:block;
+text-align:left;
+margin-top:10px;
 }
 
+input{
+width:100%;
+padding:8px;
+margin-top:5px;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+button{
+margin-top:15px;
+padding:8px;
+width:100%;
+background:#007bff;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+p{
+margin-top:15px;
+font-size:14px;
+}
