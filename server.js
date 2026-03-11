@@ -34,7 +34,7 @@ app.post("/login", (req, res) => {
 app.post("/sync", (req, res) => {
   const { user, tasks } = req.body;
   cloudTasks[user] = tasks;
-  res.json({ message: "Synced" });
+  res.json({ success:true, message: "Data Synced!" });
 });
 
 app.get("/sync/:user", (req, res) => {

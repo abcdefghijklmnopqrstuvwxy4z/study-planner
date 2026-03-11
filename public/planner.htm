@@ -19,25 +19,23 @@ body{font-family:Arial;}
 <button onclick="addTask()">Add Task</button>
 
 <h3>🍅 Pomodoro Timer</h3>
-<div id="timer">25:00</div>
+<div id="timerDiv">25:00</div>
 <button onclick="startPomodoro()">Start Focus</button>
-<div id="breakTip"></div>
+<div id="breakTipDiv"></div>
 
 <h3>📊 Study Performance Score</h3>
-<div id="score">Score: 0 / 100</div>
+<div id="scoreDiv">Score: 0 / 100</div>
 
 <button onclick="syncCloud()">☁️ Cloud Sync</button>
 <button onclick="loadCloud()">⬇️ Load Cloud</button>
 <button onclick="aiReschedule()">🤖 AI Reschedule</button>
 
 <h3>Tasks</h3>
-<div id="tasks"></div>
+<div id="tasksDiv"></div>
 
 <script>
 const user = new URLSearchParams(location.search).get("user");
 let tasks=[], pomodoro=0, timer, timeLeft=1500;
-const tasksDiv = document.getElementById('tasks');
-const timerDiv = document.getElementById('timer');
 
 function addTask(){
   tasks.push({subject:subject.value,chapter:chapter.value,time:time.value,done:false});
